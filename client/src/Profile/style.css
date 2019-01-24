@@ -1,0 +1,7 @@
+.profile-view {
+    margin: 10px
+}
+
+.profile-view .block {
+    border-left-width: 0
+}

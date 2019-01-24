@@ -1,0 +1,15 @@
+.home-view .events-view {
+    padding: 10px
+}
+
+@media screen and (max-width: 600px) {
+    
+}
+
+@media screen and (min-width: 600px) {
+    .home-view .events-view {
+        display: inline-block;
+        vertical-align: top;
+        width: 50%
+    }
+}

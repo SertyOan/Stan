@@ -1,0 +1,10 @@
+export { default as HomeView } from './Home/View';
+export { default as HomeViewController } from './Home/ViewController';
+export { default as RegistrationView } from './Registration/View';
+export { default as RegistrationViewController } from './Registration/ViewController';
+export { default as ProfileView } from './Profile/View';
+export { default as ProfileViewController } from './Profile/ViewController';
+export { default as CategoryView } from './Category/View';
+export { default as CategoryViewController } from './Category/ViewController';
+export { default as AdminView } from './Admin/View';
+export { default as AdminViewController } from './Admin/ViewController';

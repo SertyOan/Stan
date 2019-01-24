@@ -1,0 +1,94 @@
+HTML {
+    min-height: 100%;
+    padding-bottom: 10px;
+    position: relative
+}
+
+#footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    background: rgb(0, 86, 134)
+}
+
+#footer A {
+    color: rgb(255, 255, 255);
+    line-height: 10px;
+    font-size: 10px
+}
+
+#release {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    padding: 5px;
+    line-height: 10px;
+    color: rgb(255, 255, 255);
+    font-size: 10px
+}
+
+#custom {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 20px;
+    padding: 5px;
+    line-height: 10px;
+    color: rgb(255, 255, 255);
+    font-size: 10px
+}
+
+.oyat-notifier.fixed {
+    position: fixed;
+    z-index: 3000;
+    top: 52px;
+    right: 25%;
+    width: 50%
+}
+
+.oyat-notifier.fixed .oyat-notification {
+    background: rgb(0, 86, 134);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5)
+}
+
+.loader-mask {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 200
+}
+
+.loader-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0;
+    background: rgb(0, 86, 134)
+}
+
+.oyat-label.special {
+    padding: 10px;
+    margin: 0;
+    font-size: 20px;
+    line-height: 20px;
+    font-weight: bold;
+    background: rgb(0, 86, 134);
+    color: rgb(255, 255, 255)
+}
+
+.oyat-label.bold {
+    font-weight: bold
+}
+
+.block {
+    border-left: 10px solid black;
+    margin: 10px 0;
+    padding: 10px;
+    background: #EEEEEE
+}

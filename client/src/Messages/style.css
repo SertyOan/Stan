@@ -1,0 +1,83 @@
+.home-view .messages-view {
+    padding: 10px
+}
+
+@media screen and (max-width: 600px) {
+    
+}
+
+@media screen and (min-width: 600px) {
+    .home-view .messages-view {
+        display: inline-block;
+        vertical-align: top;
+        width: 50%
+    }
+}
+
+.messages-view .form {
+    position: relative;
+    overflow: hidden;
+    margin: 10px 0;
+    padding: 10px;
+    background: #EEEEEE;
+    height: 90px
+}
+
+.messages-view .form .oyat-textarea {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    margin: 0;
+    border-radius: 0;
+    border-right-width: 0;
+    width: 75%;
+    min-height: 70px
+}
+
+.messages-view .form .oyat-textarea TEXTAREA {
+    resize: none;
+    height: calc(100% - 6px);
+    width: calc(100% - 6px)
+}
+
+.messages-view .form .oyat-button {
+    position: absolute;
+    top: 10px;
+    bottom: 10px;
+    right: 10px;
+    margin: 0;
+    height: auto;
+    border-radius: 0;
+    width: 25%;
+    text-align: center
+}
+
+.messages-view .form .oyat-button .oyat-text {
+    line-height: 64px;
+    overflow: hidden
+}
+
+.messages-view .message {
+    margin: 10px 0;
+    background: #EEEEEE;
+    border-left: 10px solid black
+}
+
+.messages-view .message .head {
+    overflow: hidden
+}
+
+.messages-view .message .head .author {
+    float: left;
+    padding: 10px;
+    font-weight: bold
+}
+
+.messages-view .message .head .meta {
+    float: right;
+    padding: 10px
+}
+
+.messages-view .message .text {
+    padding: 10px
+}

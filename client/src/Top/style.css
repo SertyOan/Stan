@@ -1,0 +1,72 @@
+.top-view {
+    overflow: hidden;
+    background: rgb(255, 255, 255);
+    box-shadow: 0 0 5px rgb(0, 86, 134)
+}
+
+.top-view .title {
+    padding: 10px;
+    line-height: 30px;
+    font-size: 30px;
+    font-variant: small-caps;
+    background: rgb(0, 86, 134);
+    color: white;
+    text-align: center
+}
+
+.top-view .clickable {
+    cursor: pointer;
+    padding: 4px;
+    line-height: 20px;
+    color: rgb(0, 86, 134);
+    border: 1px solid rgb(0, 86, 134);
+    font-size: 16px;
+    font-weight: bold;
+    font-variant: small-caps;
+    text-align: center
+}
+
+
+@media screen and (max-width: 820px) {
+    .top-view .clickable {
+        margin: 10px
+    }
+}
+
+@media screen and (min-width: 820px) {
+    .top-view {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 50px;
+        z-index: 1000
+    }
+
+    .top-view .title {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 50px;
+        width: 280px
+    }
+
+    .top-view .clickable {
+        position: absolute;
+        top: 10px;
+        bottom: 10px;
+        width: 150px
+    }
+
+    .top-view .home {
+        left: 340px
+    }
+
+    .top-view .admin {
+        right: 170px
+    }
+
+    .top-view .profile {
+        right: 10px
+    }
+}

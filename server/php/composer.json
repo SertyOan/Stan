@@ -1,0 +1,20 @@
+{
+    "name": "osyra/stan",
+    "description": "Stan",
+    "type": "project",
+    "license": "MIT",
+    "config": {
+        "vendor-dir": "ThirdParty"
+    },
+    "require": {
+        "php": ">=5.4.0",
+        "osyra/syra": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "App"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

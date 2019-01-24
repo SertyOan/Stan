@@ -1,0 +1,7 @@
+.registration-view {
+    margin: 10px
+}
+
+.registration-view .block {
+    border-left-width: 0
+}

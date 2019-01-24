@@ -1,0 +1,29 @@
+.categories-view {
+    padding: 10px
+}
+
+.categories-view .category {
+    border-left: 10px solid;
+    transition: border-width ease-out 0.5s;
+    background: #EEEEEE;
+    cursor: pointer;
+    padding: 10px;
+    margin: 10px 0 0 0
+}
+
+.categories-view .category:hover {
+    background: #EEEEEE;
+    border-left-width: 30px
+}
+
+@media screen and (max-width: 600px) {
+    
+}
+
+@media screen and (min-width: 600px) {
+    .home-view .categories-view {
+        display: inline-block;
+        width: 50%;
+        vertical-align: top
+    }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "stan",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "css-loader": "^0.28.11",
+    "oyat": "github:sertyoan/Oyat#master",
+    "style-loader": "^0.20.3",
+    "url-loader": "^1.0.1",
+    "webpack": "4.17.1",
+    "webpack-cli": "^2.0.13"
+  }
+}

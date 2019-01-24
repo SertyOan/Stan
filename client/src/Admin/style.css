@@ -1,0 +1,7 @@
+.admin-view {
+    margin: 10px
+}
+
+.admin-view .block {
+    border-left-width: 0
+}

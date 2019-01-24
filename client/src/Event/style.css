@@ -1,0 +1,48 @@
+.event-view {
+    overflow: hidden;
+    margin: 10px 0 0 0;
+    background: #EEEEEE
+}
+
+.event-view .status {
+    display: inline-block;
+    margin: 10px 0 0 10px;
+    background: rgb(255, 255, 255);
+    min-height: 100px;
+    width: calc(50% - 15px);
+    vertical-align: top
+}
+
+.event-view .status .title {
+    font-weight: bold;
+    border-bottom: 1px solid black
+}
+
+.event-view .head {
+    padding: 10px;
+    transition: border-width ease-out 0.5s;
+    border-left: 10px solid black
+}
+
+.event-view .head:hover {
+    cursor: pointer;
+    border-left-width: 30px
+}
+
+.event-view .actions {
+    margin-top: 10px;
+    padding: 10px;
+    background: rgb(0, 86, 134)
+}
+
+.event-view .actions .oyat-link {
+    display: inline-block
+}
+
+.event-view .actions .oyat-link.guest {
+    display: block
+}
+
+.event-view .actions .oyat-link A {
+    color: rgb(255, 255, 255)
+}
