@@ -4,7 +4,7 @@ require('etc/Configuration.php');
 require('code/server/php/ThirdParty/autoload.php');
 
 try {
-    $recurrences = \App\DataRequest::get('Recurrence')->withFields('id', 'category', 'duration', 'timezone', 'from', 'to', 'hour', 'minute', 'type', 'options', 'statuses')
+    $recurrences = \App\DataRequest::get('Recurrence')->withFields('id', 'category', 'duration', 'timezone', 'weekDay', 'monthDay', 'from', 'to', 'hour', 'minute', 'type', 'statuses')
         ->where('', 'Recurrence', 'from', '<', time())
         ->where('AND', 'Recurrence', 'to', '>', time())
         ->mapAsObjects();
