@@ -24,6 +24,7 @@ class Recurrence extends Object {
             'timezone' => ['class' => 'String'],
             'monthDay' => ['class' => 'Integer'],
             'weekDay' => ['class' => 'Integer'],
+            'hour' => ['class' => 'Integer'],
             'minute' => ['class' => 'Integer'],
             'duration' => ['class' => 'Integer'],
             'type' => ['class' => 'String'],
