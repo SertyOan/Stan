@@ -14,6 +14,18 @@ export default View.extend({
         this.clear();
         this.add(new Label(category.name)).addType('special');
 
+        if(options.isAdministrator) {
+            var block = this.add(new View());
+            block.addType('block');
+            Helpers.Element.setAttributes(block.elements.root, { style: 'border-color:#' + category.color });
+
+            block.add(new HBox())
+                .add(new Button({ text: 'Supprimer' }))
+                    .on('Click', function() {
+                        // this.emit.bind(this, 'Delete')
+                    });
+        }
+
         var block = this.add(new View());
         block.addType('block');
         Helpers.Element.setAttributes(block.elements.root, { style: 'border-color:#' + category.color });

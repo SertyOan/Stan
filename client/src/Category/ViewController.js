@@ -35,6 +35,19 @@ export default Class.extend({
                 }.bind(this)
             });
         }.bind(this));
+
+        view.on('Delete', function() {
+            Application.callAPI({
+                method: 'Categories::delete',
+                params: {
+                    categoryID: options.categoryID
+                },
+                onSuccess: function(success) {
+                    Application.bus.emit('ChangePage', { key: 'Home' });
+                    Application.notifier.notify('Catégorie supprimée');
+                }.bind(this)
+            });
+        }.bind(this));
     },
     refresh: function() {
         Application.callAPI({
@@ -48,7 +61,8 @@ export default Class.extend({
 
                 var options = {
                     isMember: false,
-                    isOwner: (Application.session.role & User.ROLE_ADMINISTRATOR) != 0
+                    isOwner: (Application.session.role & User.ROLE_ADMINISTRATOR) != 0,
+                    isAdministrator: (Application.session.role & User.ROLE_ADMINISTRATOR) != 0
                 };
 
                 category.mySubscriptions.forEach(function(subscription) {
