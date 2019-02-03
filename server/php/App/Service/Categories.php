@@ -118,4 +118,57 @@ class Categories {
         Database::getWriter()->commit();
         return true;
     }
+
+    public function delete() {
+        $session = Session::get();
+
+        if($session->isIdentified() === false) {
+            throw new \Exception('Not connected');
+        }
+
+        if(($session->user->role & User::ROLE_ADMINISTRATOR) === 0) {
+            throw new \Exception('Not allowed');
+        }
+
+        if(!is_object($params)) {
+            throw new \InvalidArgumentException('Object expected');
+        }
+
+        if(!property_exists($params, 'categoryID') || !is_int($params->categoryID)) {
+            throw new \InvalidArgumentException('Parameter "categoryID" expected');
+        }
+
+        $category = DataRequest::get('Category')->withFields('id')
+            ->leftJoin('Event', 'Events')->on('Category', 'id', 'category')->withFields('id')
+                ->leftJoin('Attendee', 'Attendees')->on('Event', 'id', 'event')->withFields('id')
+            ->leftJoin('Message', 'Messages')->on('Category', 'id', 'category')->withFields('id')
+            ->leftJoin('Recurrence', 'Recurrences')->on('Category', 'id', 'category')->withFields('id')
+            ->leftJoin('Subscription', 'Subscriptions')->on('Category', 'id', 'category')->withFields('id')
+            ->where('', 'Category', 'id', '=', $params->categoryID)
+            ->mapAsObject();
+
+        foreach($category->myMessages as $message) {
+            $message->delete();
+        }
+
+        foreach($category->myRecurrences as $recurrence) {
+            $recurrence->delete();
+        }
+
+        foreach($category->mySubscriptions as $subscription) {
+            $subscription->delete();
+        }
+
+        foreach($category->myEvents as $event) {
+            foreach($event->myAttendees as $attendee) {
+                $attendee->delete();
+            }
+
+            $event->delete();
+        }
+
+        $category->delete();
+        Database::getWriter()->commit();
+        return true;
+    }
 }
