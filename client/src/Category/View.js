@@ -3,6 +3,7 @@ import HBox from 'oyat/UI/HBox';
 import Helpers from 'oyat/Helpers';
 import Label from 'oyat/UI/Label';
 import Button from 'oyat/UI/Button';
+import i18n from '../i18n';
 import './style.css';
 
 export default View.extend({
@@ -20,7 +21,7 @@ export default View.extend({
             Helpers.Element.setAttributes(block.elements.root, { style: 'border-color:#' + category.color });
 
             block.add(new HBox())
-                .add(new Button({ text: 'Supprimer' }))
+                .add(new Button({ text: i18n.translate('DELETE') }))
                     .on('Click', function() {
                         // this.emit.bind(this, 'Delete')
                     });
@@ -32,16 +33,16 @@ export default View.extend({
 
         if(options.isMember) {
             block.add(new HBox())
-                .add(new Button({ text: 'Se désinscrire' }))
+                .add(new Button({ text: i18n.translate('UNSUBSCRIBE') }))
                     .on('Click', this.emit.bind(this, 'Unsubscribe'));
         }
         else {
             block.add(new HBox())
-                .add(new Button({ text: 'S\'inscrire' }))
+                .add(new Button({ text: i18n.translate('SUBSCRIBE') }))
                     .on('Click', this.emit.bind(this, 'Subscribe'));
         }
 
-        block.add(new Label('Membres')).addType('bold');
+        block.add(new Label(i18n.translate('MEMBERS')).addType('bold');
 
         category.mySubscriptions.forEach(function(subscription) {
             block.add(new Label(subscription.user.nickname));
@@ -55,7 +56,16 @@ export default View.extend({
             block.add(new Label('Evènements récurrents')).addType('bold');
 
             category.myRecurrences.forEach(function(recurrence) {
-                block.add(new Label(JSON.stringify(recurrence)));
+                switch(recurrence.type) {
+                    case 'DA': var text = i18n.translate('EVERY_DAY'); break;
+                    case 'WD': var text = i18n.translate('EVERY_WEEKDAY'); break;
+                    case 'WE': var text = i18n.translate('EVERY_DAY_' + recurrence.weekDay); break;
+                    case 'WD': var text = i18n.translate('EVERY_MONTH_ON', recurrence.monthDay); break;
+                }
+
+                var description = i18n.translate('EVENT_DESCRIPTION', text, recurrence.hour, recurrence.minute, recurrence.timezone, recurrence.duration);
+
+                block.add(new Label(description));
             });
         }
     }
