@@ -42,7 +42,7 @@ export default View.extend({
                     .on('Click', this.emit.bind(this, 'Subscribe'));
         }
 
-        block.add(new Label(i18n.translate('MEMBERS')).addType('bold');
+        block.add(new Label(i18n.translate('MEMBERS'))).addType('bold');
 
         category.mySubscriptions.forEach(function(subscription) {
             block.add(new Label(subscription.user.nickname));
