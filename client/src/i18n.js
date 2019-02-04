@@ -15,10 +15,10 @@ var Module = {
             language = navigator.language;
         }
 
-        var string = Module.languages[language] || key;
+        var string = Module.languages[language][key] || key;
 
         if(replacements && replacements.length > 0) {
-            string.replace(/{(\d+)}/g, function(match, number) { 
+            string = string.replace(/{(\d+)}/g, function(match, number) { 
                 return typeof replacements[number] != 'undefined' ? replacements[number] : match;
             });
         }
