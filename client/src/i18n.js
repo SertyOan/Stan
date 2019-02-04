@@ -1,5 +1,5 @@
-import fr from 'i18n/fr';
-import en from 'i18n/en';
+import fr from './i18n/fr';
+import en from './i18n/en';
 
 var Module = {
     languages: {
