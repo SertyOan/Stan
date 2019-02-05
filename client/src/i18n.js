@@ -9,10 +9,10 @@ var Module = {
     translate: function() {
         var key = arguments[0];
         var replacements = Array.prototype.slice.call(arguments, 1);
-        var language = 'fr';
+        var language = (navigator.language || 'fr').substr(0, 2);
 
-        if(navigator.language && Module.languages[navigator.language]) {
-            language = navigator.language;
+        if(Module.languages[language]) {
+            language = 'fr';
         }
 
         var string = Module.languages[language][key] || key;
