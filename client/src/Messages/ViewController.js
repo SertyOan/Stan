@@ -28,18 +28,21 @@ export default Class.extend({
             this.categoryID = event.category.id;
             this.refresh();
         }.bind(this));
+
+        Application.bus.on('UnfocusEvent', function() {
+            this.categoryID = -1;
+            this.refresh();
+        }.bind(this));
     },
     refresh: function() {
-        if(this.categories !== null) {
-            Application.callAPI({
-                method: 'Messages::search',
-                params: {
-                    categoryID: this.categoryID
-                },
-                onSuccess: function(messages) {
-                    this.view.showMessages(messages, this.categoryID != -1);
-                }.bind(this)
-            });
-        }
+        Application.callAPI({
+            method: 'Messages::search',
+            params: {
+                categoryID: this.categoryID
+            },
+            onSuccess: function(messages) {
+                this.view.showMessages(messages, this.categoryID != -1);
+            }.bind(this)
+        });
     }
 });

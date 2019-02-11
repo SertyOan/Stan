@@ -22,8 +22,14 @@ export default Class.extend({
             });
         });
 
-        view.on('Focus', function() {
-            Application.bus.emit('FocusEvent', event);
+        view.on('HeadClick', function() {
+            if(view.focused) {
+                view.unfocus();
+                Application.bus.emit('UnfocusEvent', event);
+            }
+            else {
+                Application.bus.emit('FocusEvent', event);
+            }
         });
 
         Application.bus.on('FocusEvent', function(busEvent) {

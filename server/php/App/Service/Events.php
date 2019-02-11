@@ -52,10 +52,23 @@ class Events {
             throw new \Exception('Could not find event');
         }
 
-        $attendee = DataRequest::get('Attendee')->withFields('id')
-            ->where('', 'Attendee', 'event', '=', $event->id)
-            ->where('AND', 'Attendee', 'createdBy', '=', $session->user->id)
-            ->mapAsObject();
+        if(!property_exists($params, 'guest')) {
+            $attendee = DataRequest::get('Attendee')->withFields('id')
+                ->where('', 'Attendee', 'event', '=', $event->id)
+                ->where('AND', 'Attendee', 'createdBy', '=', $session->user->id)
+                ->mapAsObject();
+        }
+        else {
+            if(!is_string($params->guest)) {
+                throw new \InvalidArgumentException('Invalid value for guest');
+            }
+
+            $guest = strip_tags($params->guest);
+
+            if(mb_strlen($guest) < 3) {
+                throw new \InvalidArgumentException('Guest name is too short');
+            }
+        }
 
         if(empty($attendee)) {
             $attendee = new Attendee();
@@ -63,10 +76,44 @@ class Events {
             $attendee->event = $event;
         }
 
+        if(!empty($guest)) {
+            $attendee->guest = $guest;
+        }
+
         // TODO check $params->status is in $event->statuses list
         $attendee->status = $params->status;
         $attendee->createdAt = new \DateTime();
         $attendee->save();
+        Database::getWriter()->commit();
+
+        return self::get($params);
+    }
+
+    public static function unattend($params = null) {
+        $session = Session::get();
+
+        if($session->isIdentified() === false) {
+            throw new \Exception('Not connected');
+        }
+
+        if(!is_object($params)) {
+            throw new \InvalidArgumentException('Object expected');
+        }
+
+        if(!property_exists($params, 'attendeeID') || !is_int($params->attendeeID)) {
+            throw new \InvalidArgumentException('Attendee ID expected');
+        }
+
+        $attendee = DataRequest::get('Attendee')->withFields('id')
+            ->where('', 'Attendee', 'id', '=', $params->attendeeID)
+            ->where('', 'Attendee', 'createdBy', '=', $session->user->id)
+            -mapAsObject();
+
+        if(empty($attendee)) {
+            throw new \Exception('Could not find attendee');
+        }
+
+        $attendee->delete();
         Database::getWriter()->commit();
 
         return self::get($params);

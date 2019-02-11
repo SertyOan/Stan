@@ -2,6 +2,7 @@ import View from 'oyat/UI/View';
 import Label from 'oyat/UI/Label';
 import Link from 'oyat/UI/Link';
 import Helpers from 'oyat/Helpers';
+import TextField from 'oyat/UI/TextField';
 import './style.css';
 
 export default View.extend({
@@ -12,12 +13,29 @@ export default View.extend({
     },
     build: function(event) {
         this.clear();
+        this.overlay = this.add(new View());
+        this.overlay.addType('overlay');
+        this.overlay.hide();
+
+        var statuses = event.statuses.split('|');
+
+        var attendees = {};
+
+        event.myAttendees = event.myAttendees || []; // TODO do it in controller
+
+        event.myAttendees.forEach(function(attendee) {
+            if(!attendees[attendee.status]) {
+                attendees[attendee.status] = [];
+            }
+
+            attendees[attendee.status].push(attendee);
+        });
 
         var head = this.add(new View());
         head.addType('head');
         Helpers.Element.setAttributes(head.elements.root, { style: 'border-color:#' + event.category.color });
 
-        head.on('Click', this.emit.bind(this, 'Focus'));
+        head.on('Click', this.emit.bind(this, 'HeadClick'));
 
         head.add(new Label(event.category.name));
 
@@ -35,25 +53,21 @@ export default View.extend({
 
         head.add(new Label(title)).addType('date');
 
+        var texts = [];
+        
+        statuses.forEach(function(status) {
+            attendees[status] = attendees[status] || [];
+            texts.push(status + ': ' + attendees[status].length);
+        }.bind(this));
+
+        this.summary = head.add(new Label(texts.join(', ')));
+
         this.form = this.add(new View());
         this.form.addType('form');
 
         if(this.focused === false) {
             this.form.hide();
         }
-
-        var statuses = event.statuses.split('|');
-        var attendees = {};
-
-        event.myAttendees = event.myAttendees || []; // TODO do it in controller
-
-        event.myAttendees.forEach(function(attendee) {
-            if(!attendees[attendee.status]) {
-                attendees[attendee.status] = [];
-            }
-
-            attendees[attendee.status].push(attendee);
-        });
 
         statuses.forEach(function(status) {
             attendees[status] = attendees[status] || [];
@@ -79,13 +93,34 @@ export default View.extend({
 
         var guestAdd = actions.add(new Link({ text: 'Ajout d\'invité' }));
         guestAdd.addType('guest');
+        guestAdd.on('Click', this.showGuestOverlay.bind(this, event));
+    },
+    showGuestOverlay: function(event) {
+        this.overlay.show();
+        this.overlay.clear();
+
+        var nameField = this.overlay.add(new TextField({ placeholder: 'Nom de l\'invité' }));
+
+        var statuses = event.statuses.split('|');
+
+        statuses.forEach(function(status) {
+            this.overlay.add(new Link({
+                    text: status
+                }))
+                .on('Click', this.emit.bind(this, 'AddGuest', {
+                    name: nameField.getValue(),
+                    status: status
+                }));
+        }.bind(this));
     },
     focus: function() {
         this.focused = true;
         this.form.show();
+        this.summary.hide();
     },
     unfocus: function() {
         this.focused = false;
         this.form.hide();
+        this.summary.show();
     }
 });
