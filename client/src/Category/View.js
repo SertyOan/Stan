@@ -63,7 +63,7 @@ export default View.extend({
                     case 'WD': var text = i18n.translate('EVERY_MONTH_ON', recurrence.monthDay); break;
                 }
 
-                var description = i18n.translate('EVENT_DESCRIPTION', text, recurrence.hour, recurrence.minute, recurrence.timezone, recurrence.duration);
+                var description = i18n.translate('EVENT_DESCRIPTION', text, ('0' + recurrence.hour).substr(-2), ('0' + recurrence.minute).substr(-2), recurrence.timezone, recurrence.duration);
 
                 block.add(new Label(description));
             });
