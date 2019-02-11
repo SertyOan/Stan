@@ -105,14 +105,16 @@ class Events {
             throw new \InvalidArgumentException('Attendee ID expected');
         }
 
-        $attendee = DataRequest::get('Attendee')->withFields('id')
+        $attendee = DataRequest::get('Attendee')->withFields('id', 'event')
             ->where('', 'Attendee', 'id', '=', $params->attendeeID)
-            ->where('', 'Attendee', 'createdBy', '=', $session->user->id)
+            ->where('AND', 'Attendee', 'createdBy', '=', $session->user->id)
             ->mapAsObject();
 
         if(empty($attendee)) {
             throw new \Exception('Could not find attendee');
         }
+
+        $params->eventID = $attendee->event->id;
 
         $attendee->delete();
         Database::getWriter()->commit();

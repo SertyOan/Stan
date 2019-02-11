@@ -55,5 +55,17 @@
     bottom: 0;
     right: 0;
     z-index: 100;
-    background: rgba(0, 0, 0, 0.5)
+    background: rgba(0, 0, 0, 0.5);
+    overflow: hidden
+}
+
+.event-view .overlay .guest-form {
+    margin: 10px auto;
+    padding: 10px;
+    width: 300px;
+    background: rgb(255, 255, 255)
+}
+
+.event-view .overlay .guest-form .oyat-link {
+    display: inline-block
 }

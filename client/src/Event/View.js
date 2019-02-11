@@ -1,6 +1,7 @@
 import View from 'oyat/UI/View';
 import Label from 'oyat/UI/Label';
 import Link from 'oyat/UI/Link';
+import HBox from 'oyat/UI/HBox';
 import Helpers from 'oyat/Helpers';
 import TextField from 'oyat/UI/TextField';
 import './style.css';
@@ -17,19 +18,12 @@ export default View.extend({
         this.overlay.addType('overlay');
         this.overlay.hide();
 
-        var statuses = event.statuses.split('|');
-
-        var attendees = {};
-
-        event.myAttendees = event.myAttendees || []; // TODO do it in controller
-
-        event.myAttendees.forEach(function(attendee) {
-            if(!attendees[attendee.status]) {
-                attendees[attendee.status] = [];
+        this.overlay.elements.root.addEventListener('click', function(browserEvent) {
+            if(browserEvent.target === this.overlay.elements.root) {
+                this.overlay.hide();
             }
+        }.bind(this));
 
-            attendees[attendee.status].push(attendee);
-        });
 
         var head = this.add(new View());
         head.addType('head');
@@ -55,9 +49,9 @@ export default View.extend({
 
         var texts = [];
         
-        statuses.forEach(function(status) {
-            attendees[status] = attendees[status] || [];
-            texts.push(status + ': ' + attendees[status].length);
+        event.statuses.forEach(function(status) {
+            event.myAttendees[status] = event.myAttendees[status] || [];
+            texts.push(status + ': ' + event.myAttendees[status].length);
         }.bind(this));
 
         this.summary = head.add(new Label(texts.join(', ')));
@@ -69,26 +63,34 @@ export default View.extend({
             this.form.hide();
         }
 
-        statuses.forEach(function(status) {
-            attendees[status] = attendees[status] || [];
-
+        event.statuses.forEach(function(status) {
             var subView = this.form.add(new View());
             subView.addType('status');
-            subView.add(new Label(status + ' (' + attendees[status].length + ')')).addType('title');
+            subView.add(new Label(status + ' (' + event.myAttendees[status].length + ')')).addType('title');
 
-            attendees[status].forEach(function(attendee) {
-                subView.add(new Label(attendee.createdBy.nickname));
-            });
+            event.myAttendees[status].forEach(function(attendee) {
+                var line = subView.add(new HBox());
+                
+                if(attendee.deletable) {
+                    line.add(new Link({ text: 'X' }), { width: '20px' })
+                        .on('Click', this.emit.bind(this, 'Unattend', { attendeeID: attendee.id }));
+                }
+                else {
+                    line.add(new View(), { width: '20px' }).setHTML('&nbsp;');
+                }
+
+                line.add(new Label(attendee.guest || attendee.createdBy.nickname));
+            }.bind(this));
         }.bind(this));
 
         var actions = this.form.add(new View());
         actions.addType('actions');
 
-        statuses.forEach(function(status) {
+        event.statuses.forEach(function(status) {
             actions.add(new Link({
                     text: status
                 }))
-                .on('Click', this.emit.bind(this, 'Attend', status));
+                .on('Click', this.emit.bind(this, 'Attend', { status: status }));
         }.bind(this));
 
         var guestAdd = actions.add(new Link({ text: 'Ajout d\'invité' }));
@@ -99,18 +101,21 @@ export default View.extend({
         this.overlay.show();
         this.overlay.clear();
 
-        var nameField = this.overlay.add(new TextField({ placeholder: 'Nom de l\'invité' }));
+        var form = this.overlay.add(new View())
+        form.addType('guest-form');
 
-        var statuses = event.statuses.split('|');
+        form.add(new Label('Nom de l\'invité'));
+        var nameField = form.add(new TextField());
 
-        statuses.forEach(function(status) {
-            this.overlay.add(new Link({
-                    text: status
-                }))
-                .on('Click', this.emit.bind(this, 'AddGuest', {
-                    name: nameField.getValue(),
-                    status: status
-                }));
+        form.add(new Label('Statut de l\'invité'));
+        event.statuses.forEach(function(status) {
+            var link = form.add(new Link({ text: status }));
+            link.on('Click', function(selected) {
+                this.emit('Attend', {
+                    guest: nameField.getValue(),
+                    status: selected
+                });
+            }.bind(this, status));
         }.bind(this));
     },
     focus: function() {
@@ -121,6 +126,7 @@ export default View.extend({
     unfocus: function() {
         this.focused = false;
         this.form.hide();
+        this.overlay.hide();
         this.summary.show();
     }
 });
