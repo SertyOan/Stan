@@ -17,5 +17,17 @@ export default Class.extend({
                 }
             });
         });
+
+        view.on('SendMail', function(params) {
+            Application.callAPI({
+                method: 'Application::mail',
+                params: params,
+                onSuccess: function(data) {
+                    Application.notifier.notify('Mail envoyé à ' + data.successful + ' utilisateurs', { timeout: 2500 });
+                    // TODO show an alert for errors ?
+                    view.build();
+                }
+            });
+        });
     }
 });
