@@ -73,9 +73,9 @@ class Recurrence extends Object {
         for($i = 0; $i < 14; $i++) {
             $startAt = $date->getTimestamp();
             $endAt = $startAt + $this->duration * 60;
-            $weekDay = (Integer) date('w', $startAt);
+            $value = (Integer) date($dateType, $startAt);
 
-            if(in_array($weekDay, $weekDays)) {
+            if(in_array($value, $allowedValues)) {
                 $found = DataRequest::get('Event')->withFields('id')
                     ->where('', 'Event', 'category', '=', $this->category->id)
                     ->where('AND', 'Event', 'startAt', '=', $startAt)
