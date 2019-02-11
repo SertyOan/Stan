@@ -56,6 +56,7 @@ class Events {
             $attendee = DataRequest::get('Attendee')->withFields('id')
                 ->where('', 'Attendee', 'event', '=', $event->id)
                 ->where('AND', 'Attendee', 'createdBy', '=', $session->user->id)
+                ->where('AND', 'Attendee', 'guest', 'IS NULL')
                 ->mapAsObject();
         }
         else {
@@ -66,7 +67,7 @@ class Events {
             $guest = strip_tags($params->guest);
 
             if(mb_strlen($guest) < 3) {
-                throw new \InvalidArgumentException('Guest name is too short');
+                throw new \InvalidArgumentException('Le nom de l\'invité est trop court');
             }
         }
 
@@ -107,7 +108,7 @@ class Events {
         $attendee = DataRequest::get('Attendee')->withFields('id')
             ->where('', 'Attendee', 'id', '=', $params->attendeeID)
             ->where('', 'Attendee', 'createdBy', '=', $session->user->id)
-            -mapAsObject();
+            ->mapAsObject();
 
         if(empty($attendee)) {
             throw new \Exception('Could not find attendee');
