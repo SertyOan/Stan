@@ -50,7 +50,7 @@ class Users {
             $mail = new Mail();
             $mail->setSender(STAN_EMAIL);
             $mail->addRecipient($user->email);
-            $mail->setSubject('Votre compte sur football.plouzane.osyra.net');
+            $mail->setSubject('Votre compte sur '.STAN_FQDN);
             $mail->textBody($text, 'utf-8');
             $mail->send();
         }
