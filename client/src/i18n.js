@@ -11,7 +11,7 @@ var Module = {
         var replacements = Array.prototype.slice.call(arguments, 1);
         var language = (navigator.language || 'fr').substr(0, 2);
 
-        if(Module.languages[language]) {
+        if(!Module.languages[language]) {
             language = 'fr';
         }
 
