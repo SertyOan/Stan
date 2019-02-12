@@ -79,6 +79,11 @@ class Users {
         }
 
         $name = strip_tags($params->name);
+
+        if(mb_strlen($name) < 3) {
+            throw new \InvalidArgumentException('Nom trop court');
+        }
+
         // TODO check unicity ?
 
         $session->user->nickname = $name;
