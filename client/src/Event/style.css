@@ -30,6 +30,10 @@
     border-left-width: 30px
 }
 
+.event-view .oyat-label.guest {
+    font-style: italic
+}
+
 .event-view .actions {
     margin-top: 10px;
     padding: 10px;

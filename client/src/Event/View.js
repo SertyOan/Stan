@@ -79,7 +79,13 @@ export default View.extend({
                     line.add(new View(), { width: '20px' }).setHTML('&nbsp;');
                 }
 
-                line.add(new Label(attendee.guest || attendee.createdBy.nickname));
+                if(attendee.guest) {
+                    var label = line.add(new Label(attendee.guest + ' #invité'));
+                    label.addType('guest');
+                }
+                else {
+                    line.add(new Label(attendee.createdBy.nickname));
+                }
             }.bind(this));
         }.bind(this));
 
