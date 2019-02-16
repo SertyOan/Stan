@@ -56,6 +56,7 @@ class Categories {
             ->leftJoin('Subscription', 'Subscriptions')->on('Category', 'id', 'category')->withFields('id', 'role')
                 ->leftJoin('User')->on('Subscription', 'user')->withFields('id', 'nickname')
             ->where('', 'Category', 'id', '=', $params->categoryID)
+            ->orderAscBy('User', 'nickname')
             ->mapAsObject();
         return $category->asArray();
     }
