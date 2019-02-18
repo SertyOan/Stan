@@ -19,7 +19,7 @@ class Helpers {
             throw new \InvalidArgumentException('Invalid function');
         }
 
-        if(!call_user_function($function, $params->{$field})) {
+        if(!call_user_func($function, $params->{$field})) {
             throw new \InvalidArgumentException('Parameter "'.$field.'" is invalid');
         }
     }
