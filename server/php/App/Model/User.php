@@ -16,7 +16,8 @@ class User extends Object {
 			'email' => ['class' => 'String'],
 			'secretKey' => ['class' => 'String'],
             'nickname' => ['class' => 'String'],
-            'role' => ['class' => 'Integer']
+            'role' => ['class' => 'Integer'],
+            'lastSeen' => ['class' => 'Timestamp']
 		];
 
     protected
@@ -24,5 +25,6 @@ class User extends Object {
         $email,
         $secretKey,
         $nickname,
-        $role;
+        $role,
+        $lastSeen;
 }

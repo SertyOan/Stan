@@ -3,6 +3,7 @@ namespace App\Service;
 
 use App\Session;
 use App\DataRequest;
+use App\Database;
 use App\Mail;
 use App\Model\User;
 
@@ -10,6 +11,9 @@ class Application {
     public static function session() {
         $session = Session::get();
         $user = $session->user;
+        $user->lastSeen = new \DateTime();
+        $user->save();
+        Database::getWriter()->commit();
 
         return [
             'id' => empty($user) ? null : $user->id,
