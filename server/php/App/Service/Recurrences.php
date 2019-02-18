@@ -29,7 +29,7 @@ class Recurrences {
         if(($session->user->role & User::ROLE_ADMINISTRATOR) === 0) {
             $request->innerJoin('Subscription')->on('Category', 'id', 'category')
                 ->with('', 'user', '=', $session->user->id)
-                ->with('AND', 'role', '&', Subscription::ROLE_OWNER);
+                ->with('AND', 'owner', '=', 1);
         }
 
         $category = $request->mapAsObject();
@@ -83,7 +83,7 @@ class Recurrences {
         if(($session->user->role & User::ROLE_ADMINISTRATOR) === 0) {
             $request->innerJoin('Subscription')->on('Category', 'id', 'category')
                 ->with('', 'user', '=', $session->user->id)
-                ->with('AND', 'role', '&', Subscription::ROLE_OWNER);
+                ->with('AND', 'owner', '=', 1);
         }
 
         $recurrence = $request->mapAsObject();
