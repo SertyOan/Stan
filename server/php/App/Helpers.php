@@ -15,7 +15,7 @@ class Helpers {
             throw new \InvalidArgumentException('Parameter "categoryID" expected');
         }
 
-        if(function_exists($function)) {
+        if(!function_exists($function)) {
             throw new \InvalidArgumentException('Invalid function');
         }
 
