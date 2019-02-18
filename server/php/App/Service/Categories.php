@@ -53,7 +53,7 @@ class Categories {
 
         $category = DataRequest::get('Category')->withFields('id', 'name', 'color')
             ->leftJoin('Recurrence', 'Recurrences')->on('Category', 'id', 'category')->withFields('id', 'from', 'to', 'timezone', 'weekDay', 'monthDay', 'hour', 'minute', 'duration', 'type', 'statuses')
-            ->leftJoin('Subscription', 'Subscriptions')->on('Category', 'id', 'category')->withFields('id', 'role')
+            ->leftJoin('Subscription', 'Subscriptions')->on('Category', 'id', 'category')->withFields('id', 'owner')
                 ->leftJoin('User')->on('Subscription', 'user')->withFields('id', 'nickname')
             ->where('', 'Category', 'id', '=', $params->categoryID)
             ->orderAscBy('User', 'nickname')
