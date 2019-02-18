@@ -242,7 +242,7 @@ class Events {
         $event = new Event();
         $event->category = $category;
         $event->startAt = $timestamp;
-        $event->endAt = $timestamp + $params->duration;
+        $event->endAt = $timestamp + $params->duration * 60;
         $event->statuses = implode('|', $statuses);
 
         $event->save();
