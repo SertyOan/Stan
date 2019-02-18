@@ -3,10 +3,11 @@ import HBox from 'oyat/UI/HBox';
 import Helpers from 'oyat/Helpers';
 import Label from 'oyat/UI/Label';
 import Link from 'oyat/UI/Link';
-import TextField from 'oyat/UI/TextField';
 import ChoicesView from 'oyat/UI/ChoicesView';
+import TextField from 'oyat/UI/TextField';
 import Button from 'oyat/UI/Button';
 import i18n from '../i18n';
+import IntegerField from '../IntegerField';
 import './style.css';
 
 export default View.extend({
@@ -124,16 +125,23 @@ export default View.extend({
             this.showCreator();
         }.bind(this));
 
+        var line = this.creator.add(new HBox());
+        line.add(new Label('Statuts'), { width: '150px' });
+        var statusField = line.add(new TextField({ placeholder: 'séparés par des virgules' }), { width: 'calc(100% - 150px)', defaultValue: (this.creatorContext.statuses || []).join(',') });
+        statusField.on('KeyUp', function(data) {
+            this.creatorContext.statuses = data.value.split(',');
+        }.bind(this));
+
         if(this.creatorContext.form) {
             var line = this.creator.add(new HBox());
             line.add(new Label('Début'), { width: '150px' });
 
-            line.add(new TextField({ placeholder: 'heure', defaultValue: this.creatorContext.hour || '' }))
-                .on('KeyUp', function(data) {
-                    this.creatorContext.hour = new Number(data.value);
-                }.bind(this));
+            var hourField = line.add(new IntegerField({ placeholder: 'heure', defaultValue: this.creatorContext.hour || '' }));
+            hourField.on('KeyUp', function(data) {
+                this.creatorContext.hour = new Number(data.value);
+            }.bind(this));
 
-            line.add(new TextField({ placeholder: 'minute', defaultValue: this.creatorContext.minute || '' }))
+            line.add(new IntegerField({ placeholder: 'minute', defaultValue: this.creatorContext.minute || '' }))
                 .on('KeyUp', function(data) {
                     this.creatorContext.minute = new Number(data.value);
                 }.bind(this));
@@ -141,7 +149,7 @@ export default View.extend({
             var line = this.creator.add(new HBox());
             line.add(new Label('Durée'), { width: '150px' });
 
-            line.add(new TextField({ placeholder: 'en minutes', defaultValue: this.creatorContext.duration || '' }))
+            line.add(new IntegerField({ placeholder: 'en minutes', defaultValue: this.creatorContext.duration || '' }))
                 .on('KeyUp', function(data) {
                     this.creatorContext.duration = new Number(data.value);
                 }.bind(this));
@@ -151,17 +159,17 @@ export default View.extend({
             var line = this.creator.add(new HBox());
             line.add(new Label('Jour de l\'évènement'), { width: '150px' });
 
-            line.add(new TextField({ placeholder: 'année', defaultValue: this.creatorContext.year || '' }))
+            line.add(new IntegerField({ placeholder: 'année', defaultValue: this.creatorContext.year || '' }))
                 .on('KeyUp', function(data) {
                     this.creatorContext.year = new Number(data.value);
                 }.bind(this));
 
-            line.add(new TextField({ placeholder: 'mois', defaultValue: this.creatorContext.month || '' }))
+            line.add(new IntegerField({ placeholder: 'mois', defaultValue: this.creatorContext.month || '' }))
                 .on('KeyUp', function(data) {
                     this.creatorContext.month = new Number(data.value);
                 }.bind(this));
 
-            line.add(new TextField({ placeholder: 'jour', defaultValue: this.creatorContext.day || '' }))
+            line.add(new IntegerField({ placeholder: 'jour', defaultValue: this.creatorContext.day || '' }))
                 .on('KeyUp', function(data) {
                     this.creatorContext.day = new Number(data.value);
                 }.bind(this));
@@ -205,7 +213,7 @@ export default View.extend({
                     var line = this.creator.add(new HBox());
                     line.add(new Label('Jour du mois'), { width: '150px' });
 
-                    var monthDayField = line.add(new TextField());
+                    var monthDayField = line.add(new IntegerField());
                     monthDayField.on('KeyUp', function() {
                         this.creatorContext.monthDay = new Number(monthDayField.getValue());
                     }.bind(this));

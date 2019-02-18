@@ -6,6 +6,8 @@ use App\DataRequest;
 use App\Database;
 use App\Session;
 use App\Model\Attendee;
+use App\Model\Event;
+use App\Model\User;
 
 class Events {
     public static function search($params = null) {
@@ -164,6 +166,29 @@ class Events {
         }
 
         Helpers::checkParams($params, 'categoryID', 'is_int');
+        Helpers::checkParams($params, 'year', 'is_int');
+        Helpers::checkParams($params, 'month', 'is_int');
+        Helpers::checkParams($params, 'day', 'is_int');
+        Helpers::checkParams($params, 'hour', 'is_int');
+        Helpers::checkParams($params, 'minute', 'is_int');
+        Helpers::checkParams($params, 'statuses', 'is_array');
+
+        $statuses = [];
+
+        foreach($params->statuses as $status) {
+            if(is_string($status)) {
+                $status = strip_tags($status);
+                $status = trim($status);
+
+                if(!empty($status)) {
+                    $statuses[] = $status;
+                }
+            }
+        }
+
+        if(sizeof($statuses) < 1) {
+            throw new \Exception('Not enough statuses');
+        }
 
         $category = DataRequest::get('Category')->withFields('id')
             ->where('', 'Category', 'id', '=', $params->categoryID)
@@ -185,7 +210,75 @@ class Events {
             }
         }
 
+        if($params->year < date('Y')) {
+            throw new \Exception('Invalid year');
+        }
 
+        if($params->month < 1 || $params->month > 12) {
+            throw new \Exception('Invalid month');
+        }
+
+        if($params->day < 1 || $params->day > 31) {
+            throw new \Exception('Invalid day');
+        }
+
+        if($params->hour < 0 || $params->hour > 23) {
+            throw new \Exception('Invalid hour');
+        }
+
+        if($params->minute < 0 || $params->minute > 59) {
+            throw new \Exception('Invalid minute');
+        }
+
+        $stringDate = $params->year.'-';
+        $stringDate .= str_pad($params->month, 2, '0', STR_PAD_LEFT).'-';
+        $stringDate .= str_pad($params->day, 2, '0', STR_PAD_LEFT).' ';
+        $stringDate .= str_pad($params->hour, 2, '0', STR_PAD_LEFT).':';
+        $stringDate .= str_pad($params->minute, 2, '0', STR_PAD_LEFT);
+
+        $date = new \DateTime($stringDate, new \DateTimeZone('Europe/Paris')); // TODO review
+        $timestamp = $date->getTimestamp();
+
+        $event = new Event();
+        $event->category = $category;
+        $event->startAt = $timestamp;
+        $event->endAt = $timestamp + $params->duration;
+        $event->statuses = implode('|', $statuses);
+
+        $event->save();
+        Database::getWriter()->commit();
+        return true;
+    }
+
+    public static function delete($params = null) {
+        $session = Session::get();
+
+        if($session->isIdentified() === false) {
+            throw new \Exception('Not connected');
+        }
+
+        if(!is_object($params)) {
+            throw new \InvalidArgumentException('Object expected');
+        }
+
+        Helpers::checkParams($params, 'eventID', 'is_int');
+
+        $request = DataRequest::get('Event')->withFields('id', 'recurrence')
+            ->where('', 'Event', 'id', '=', $params->eventID);
+
+        if(($session->user->role & User::ROLE_ADMINISTRATOR) === 0) {
+            $request->innerJoin('Category')->on('Event', 'category')
+                ->innerJoin('Subscription')->on('Category', 'id', 'category')->with('', 'user', '=', $session->user->id);
+        }
+
+        $event = $request->mapAsObject();
+    
+        if(empty($event)) {
+            throw new \Exception('Evènement non trouvée');
+        }
+
+        $event->delete();
+        Database::getWriter()->commit();
         return true;
     }
 }
