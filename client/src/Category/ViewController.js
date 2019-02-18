@@ -36,6 +36,58 @@ export default Class.extend({
             });
         }.bind(this));
 
+        view.on('Promote', function(subscriptionID) {
+             Application.callAPI({
+                method: 'Subscriptions::promote',
+                params: {
+                    subscriptionID: subscriptionID
+                },
+                onSuccess: function(success) {
+                    Application.notifier.notify('Promotion effectuée');
+                    this.refresh();
+                }.bind(this)
+            });
+        }.bind(this));
+
+        view.on('Demote', function(subscriptionID) {
+             Application.callAPI({
+                method: 'Subscriptions::demote',
+                params: {
+                    subscriptionID: subscriptionID
+                },
+                onSuccess: function(success) {
+                    Application.notifier.notify('Rétrogradation effectuée');
+                    this.refresh();
+                }.bind(this)
+            });
+        }.bind(this));
+
+        view.on('CreateEvent', function(data) {
+            data.categoryID = options.categoryID;
+
+            switch(data.form) {
+                case 'PO':
+                    var method = 'Events::create';
+                    break;
+                case 'RE':
+                    var method = 'Recurrences::create';
+                    break;
+                default:
+                    Application.notifier.notify('Type invalide');
+            }
+
+            if(method) {
+                Application.callAPI({
+                    method: method,
+                    params: data,
+                    onSuccess: function(success) {
+                        Application.notifier.notify('Evènement créé');
+                        this.refresh();
+                    }.bind(this)
+                });
+            }
+        }.bind(this));
+
         view.on('Delete', function() {
             Application.callAPI({
                 method: 'Categories::delete',
@@ -69,7 +121,7 @@ export default Class.extend({
                     if(subscription.user.id === Application.session.id) {
                         options.isMember = true;
 
-                        if((subscription.role & Subscription.ROLE_OWNER) != 0) {
+                        if(subscription.owner) {
                             options.isOwner = true;
                         }
                     }

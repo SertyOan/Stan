@@ -1,6 +1,7 @@
 <?php
 namespace App\Service;
 
+use App\Helpers;
 use App\DataRequest;
 use App\Database;
 use App\Session;
@@ -149,5 +150,42 @@ class Events {
         }
 
         return $event->asArray();
+    }
+
+    public static function create($params = null) {
+        $session = Session::get();
+
+        if($session->isIdentified() === false) {
+            throw new \Exception('Not connected');
+        }
+
+        if(!is_object($params)) {
+            throw new \InvalidArgumentException('Object expected');
+        }
+
+        Helpers::checkParams($params, 'categoryID', 'is_int');
+
+        $category = DataRequest::get('Category')->withFields('id')
+            ->where('', 'Category', 'id', '=', $params->categoryID)
+            ->mapAsObject();
+    
+        if(empty($category)) {
+            throw new \Exception('Catégorie non trouvée');
+        }
+
+        if(($session->user->role & User::ROLE_ADMINISTRATOR) === 0) {
+            $check = DataRequest::get('Subscription')->withFields('id', 'owner')
+                ->where('', 'Subscription', 'category', '=', $category->id)
+                ->where('AND', 'Subscription', 'user', '=', $session->user->id)
+                ->where('AND', 'Subscription', 'owner', '=', 1)
+                ->mapAsObject();
+
+            if(empty($check)) {
+                throw new \Exception('Action refusée');
+            }
+        }
+
+
+        return true;
     }
 }

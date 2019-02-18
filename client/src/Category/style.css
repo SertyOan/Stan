@@ -15,3 +15,7 @@
     margin: 5px;
     background: white
 }
+
+.category-view .owner {
+    text-align: right
+}

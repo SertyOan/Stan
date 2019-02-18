@@ -19,18 +19,6 @@ export default View.extend({
 
         this.add(new Label(category.name)).addType('special');
 
-        if(options.isAdministrator) {
-            var block = this.add(new View());
-            block.addType('block');
-            Helpers.Element.setAttributes(block.elements.root, { style: 'border-color:#' + category.color });
-
-            block.add(new HBox())
-                .add(new Button({ text: i18n.translate('DELETE') }))
-                    .on('Click', function() {
-                        // this.emit.bind(this, 'Delete')
-                    });
-        }
-
         var block = this.add(new View());
         block.addType('block');
         Helpers.Element.setAttributes(block.elements.root, { style: 'border-color:#' + category.color });
@@ -50,7 +38,6 @@ export default View.extend({
             var block = this.add(new View());
             block.addType('block');
             Helpers.Element.setAttributes(block.elements.root, { style: 'border-color:#' + category.color });
-
             block.add(new Label('Évènements récurrents')).addType('bold');
 
             category.myRecurrences.forEach(function(recurrence) {
@@ -76,22 +63,56 @@ export default View.extend({
             this.creatorContext = {};
         }
 
+        var block = this.add(new View());
+        block.addType('block');
+        Helpers.Element.setAttributes(block.elements.root, { style: 'border-color:#' + category.color });
         block.add(new Label(i18n.translate('MEMBERS'))).addType('bold');
 
         category.mySubscriptions.forEach(function(subscription) {
             var subView = block.add(new View());
             subView.addType('member');
             subView.add(new Label(subscription.user.nickname)).addType('name');
-            subView.add(new Label(subscription.role & 1 ? 'Administrateur' : 'Membre')).addType('role'); // TODO review
-        });
+            subView.add(new Label(subscription.owner ? 'Administrateur' : 'Membre')).addType('status'); // TODO review
+
+            if(options.isOwner || options.isAdministrator) {
+                if(subscription.owner) {
+                    var link = subView.add(new Link({ text: 'Rétrograder' }));
+                    link.addType('owner');
+                    link.on('Click', function(selection) {
+                        this.emit('Demote', selection.id);
+                    }.bind(this, subscription));
+                }
+                else {
+                    var link = subView.add(new Link({ text: 'Promouvoir' }));
+                    link.addType('owner');
+                    link.on('Click', function(selection) {
+                        this.emit('Promote', selection.id);
+                    }.bind(this, subscription));
+                }
+            }
+        }.bind(this));
+
+        if(options.isAdministrator) {
+            var block = this.add(new View());
+            block.addType('block');
+            block.add(new Label('Actions administratives')).addType('bold');
+            Helpers.Element.setAttributes(block.elements.root, { style: 'border-color:#' + category.color });
+
+            block.add(new HBox())
+                .add(new Button({ text: i18n.translate('DELETE') }))
+                    .on('Click', function() {
+                        // this.emit.bind(this, 'Delete')
+                    });
+        }
     },
     showCreator: function() {
         this.creator.show();
         this.creator.clear();
 
-        this.creator.add(new Label('Type d\'évènement'));
+        var line = this.creator.add(new HBox());
+        line.add(new Label('Type d\'évènement'), { width: '150px' });
 
-        var firstField = this.creator.add(new ChoicesView({
+        var firstField = line.add(new ChoicesView({
             choices: [{ value: 'RE', html: 'Récurrent' }, { value: 'PO', html: 'Ponctuel' }],
             maxChoices: 1,
             defaultValues: this.creatorContext.form ? [this.creatorContext.form] : []
@@ -103,37 +124,53 @@ export default View.extend({
             this.showCreator();
         }.bind(this));
 
-        this.creator.add(new TextField({ placeholder: 'heure de début', defaultValue: this.creatorContext.hour || '' }))
-            .on('KeyUp', function(data) {
-                this.creatorContext.hour = data.value;
-            }.bind(this));
-        this.creator.add(new TextField({ placeholder: 'durée (en minutes)', defaultValue: this.creatorContext.duration || '' }))
-            .on('KeyUp', function(data) {
-                this.creatorContext.duration = data.value;
-            }.bind(this));
+        if(this.creatorContext.form) {
+            var line = this.creator.add(new HBox());
+            line.add(new Label('Début'), { width: '150px' });
 
-        if(this.creatorContext.form == 'PO') {
-            this.creator.add(new Label('Jour de l\'évènement'));
+            line.add(new TextField({ placeholder: 'heure', defaultValue: this.creatorContext.hour || '' }))
+                .on('KeyUp', function(data) {
+                    this.creatorContext.hour = new Number(data.value);
+                }.bind(this));
+
+            line.add(new TextField({ placeholder: 'minute', defaultValue: this.creatorContext.minute || '' }))
+                .on('KeyUp', function(data) {
+                    this.creatorContext.minute = new Number(data.value);
+                }.bind(this));
 
             var line = this.creator.add(new HBox());
+            line.add(new Label('Durée'), { width: '150px' });
+
+            line.add(new TextField({ placeholder: 'en minutes', defaultValue: this.creatorContext.duration || '' }))
+                .on('KeyUp', function(data) {
+                    this.creatorContext.duration = new Number(data.value);
+                }.bind(this));
+        }
+
+        if(this.creatorContext.form == 'PO') {
+            var line = this.creator.add(new HBox());
+            line.add(new Label('Jour de l\'évènement'), { width: '150px' });
 
             line.add(new TextField({ placeholder: 'année', defaultValue: this.creatorContext.year || '' }))
                 .on('KeyUp', function(data) {
-                    this.creatorContext.year = data.value;
+                    this.creatorContext.year = new Number(data.value);
                 }.bind(this));
 
             line.add(new TextField({ placeholder: 'mois', defaultValue: this.creatorContext.month || '' }))
                 .on('KeyUp', function(data) {
-                    this.creatorContext.month = data.value;
+                    this.creatorContext.month = new Number(data.value);
                 }.bind(this));
 
             line.add(new TextField({ placeholder: 'jour', defaultValue: this.creatorContext.day || '' }))
                 .on('KeyUp', function(data) {
-                    this.creatorContext.day = data.value;
+                    this.creatorContext.day = new Number(data.value);
                 }.bind(this));
         }
-        else {
-            var typeField = this.creator.add(new ChoicesView({
+        else if(this.creatorContext.form == 'RE') {
+            var line = this.creator.add(new HBox());
+            line.add(new Label('Type de récurrence'), { width: '150px' });
+
+            var typeField = line.add(new ChoicesView({
                 choices: [
                     { value: 'DA', html: i18n.translate('EVERY_DAY') },
                     { value: 'WD', html: i18n.translate('EVERY_WEEKDAY') },
@@ -150,7 +187,10 @@ export default View.extend({
 
             switch(this.creatorContext.type) {
                 case 'WE':
-                    var weekDayField = this.creator.add(new ChoicesView({
+                    var line = this.creator.add(new HBox());
+                    line.add(new Label('Jour de la semaine'), { width: '150px' });
+
+                    var weekDayField = line.add(new ChoicesView({
                         choices: [1, 2, 3, 4, 5, 6, 0].map(function(id) {
                             return { value: id, html: i18n.translate('EVERY_DAY_' + id) };
                         }),
@@ -158,18 +198,26 @@ export default View.extend({
                         defaultValues: this.creatorContext.weekDay ? [this.creatorContext.weekDay] : []
                     }));
                     weekDayField.on('Change', function() {
-                        this.creatorContext.weekDay = weekDayField.getValues()[0];
+                        this.creatorContext.weekDay = new Number(weekDayField.getValues()[0]);
                     }.bind(this));
                     break;
                 case 'MO':
-                    this.creator.add(new TextField({ placeholder: 'jour du mois' }));
+                    var line = this.creator.add(new HBox());
+                    line.add(new Label('Jour du mois'), { width: '150px' });
+
+                    var monthDayField = line.add(new TextField());
+                    monthDayField.on('KeyUp', function() {
+                        this.creatorContext.monthDay = new Number(monthDayField.getValue());
+                    }.bind(this));
                     break;
             }
         }
 
-        this.creator.add(new Button({ text: 'Créer' }))
+        var line = this.creator.add(new HBox());
+        line.add(new View(), { width: '100px' }).setHTML('&nbsp;');
+        line.add(new Button({ text: 'Créer' }))
             .on('Click', function() {
-                this.emit('Create', this.creatorContext);
+                this.emit('CreateEvent', this.creatorContext);
             }.bind(this));
     }
 });
