@@ -46,15 +46,6 @@ export default View.extend({
                     .on('Click', this.emit.bind(this, 'Subscribe'));
         }
 
-        block.add(new Label(i18n.translate('MEMBERS'))).addType('bold');
-
-        category.mySubscriptions.forEach(function(subscription) {
-            var subView = block.add(new View());
-            subView.addType('member');
-            subView.add(new Label(subscription.user.nickname)).addType('name');
-            subView.add(new Label(subscription.role & 1 ? 'Administrateur' : 'Membre')).addType('role'); // TODO review
-        });
-
         if(options.isOwner) {
             var block = this.add(new View());
             block.addType('block');
@@ -84,6 +75,15 @@ export default View.extend({
 
             this.creatorContext = {};
         }
+
+        block.add(new Label(i18n.translate('MEMBERS'))).addType('bold');
+
+        category.mySubscriptions.forEach(function(subscription) {
+            var subView = block.add(new View());
+            subView.addType('member');
+            subView.add(new Label(subscription.user.nickname)).addType('name');
+            subView.add(new Label(subscription.role & 1 ? 'Administrateur' : 'Membre')).addType('role'); // TODO review
+        });
     },
     showCreator: function() {
         this.creator.show();
