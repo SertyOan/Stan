@@ -51,7 +51,12 @@ export default View.extend({
 
                 var description = i18n.translate('EVENT_DESCRIPTION', text, ('0' + recurrence.hour).substr(-2), ('0' + recurrence.minute).substr(-2), recurrence.timezone, recurrence.duration);
 
-                block.add(new Label(description));
+                var line = block.add(new HBox());
+                line.add(new Link({ text: 'X' }))
+                    .on('Click', function(selection) {
+                        this.emit('DeleteRecurrence', { recurrenceID: selection.id });
+                    }.bind(this, recurrence));
+                line.add(new Label(description));
             });
 
             block.add(new Link({ text: 'Créer un évènement' }))
