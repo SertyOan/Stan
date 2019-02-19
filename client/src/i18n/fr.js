@@ -11,6 +11,8 @@ export default {
     EVERY_DAY_6: 'Chaque Samedi',
     EVERY_MONTH_ON: 'Chaque {0} du mois',
     EVERY_WEEKDAY: 'Chaque jour de semaine',
+    EVERY_WEEK: 'Chaque semaine',
+    EVERY_MONTH: 'Chaque mois',
     MEMBERS: 'Membres',
     SUBSCRIBE: 'S\'inscrire',
     UNSUBSCRIBE: 'Se désinscrire'
