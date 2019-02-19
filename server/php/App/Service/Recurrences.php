@@ -1,6 +1,7 @@
 <?php
 namespace App\Service;
 
+use App\Helpers;
 use App\Session;
 use App\Database;
 use App\DataRequest;

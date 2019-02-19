@@ -60,6 +60,7 @@ export default Class.extend({
     refresh: function(event) {
         event.myAttendees = event.myAttendees || [];
         event.statuses = event.statuses.split('|');
+        event.owned = event.category.mySubscriptions[0].owner === 1;
 
         var attendees = {};
 

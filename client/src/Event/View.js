@@ -24,7 +24,6 @@ export default View.extend({
             }
         }.bind(this));
 
-
         var head = this.add(new View());
         head.addType('head');
         Helpers.Element.setAttributes(head.elements.root, { style: 'border-color:#' + event.category.color });
@@ -102,6 +101,10 @@ export default View.extend({
         var guestAdd = actions.add(new Link({ text: 'Ajout d\'invité' }));
         guestAdd.addType('guest');
         guestAdd.on('Click', this.showGuestOverlay.bind(this, event));
+
+        if(event.owned) {
+            actions.add(new Link({ text: 'Annuler' }));
+        }
     },
     showGuestOverlay: function(event) {
         this.overlay.show();

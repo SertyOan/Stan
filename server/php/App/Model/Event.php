@@ -10,14 +10,15 @@ class Event extends Object {
         DATABASE_TABLE = 'Event';
 
 	protected static
-		$properties = Array(
-			'id' => Array('class' => 'Integer'),
-            'recurrence' => Array('class' => '\\App\\Model\\Recurrence'),
-			'category' => Array('class' => '\\App\\Model\\Category'),
-            'startAt' => Array('class' => 'Timestamp'),
-            'endAt' => Array('class' => 'Timestamp'),
-            'statuses' => Array('class' => 'String')
-		);
+		$properties = [
+			'id' => ['class' => 'Integer'],
+            'recurrence' => ['class' => '\\App\\Model\\Recurrence'],
+			'category' => ['class' => '\\App\\Model\\Category'],
+            'startAt' => ['class' => 'Timestamp'],
+            'endAt' => ['class' => 'Timestamp'],
+            'cancelled' => ['class' => 'Integer'],
+            'statuses' => ['class' => 'String']
+		];
 
     protected
         $id,
@@ -25,5 +26,6 @@ class Event extends Object {
         $category,
         $startAt,
         $endAt,
+        $cancelled,
         $statuses;
 }
