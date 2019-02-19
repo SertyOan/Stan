@@ -21,7 +21,7 @@ class Events {
             ->leftJoin('Attendee', 'Attendees')->on('Event', 'id', 'event')->withFields('id', 'status', 'guest', 'createdBy')
             ->leftJoin('User')->on('Attendee', 'createdBy')->withFields('id', 'nickname')
             ->innerJoin('Category')->on('Event', 'category')->withFields('id', 'name', 'color')
-            ->innerJoin('Subscription')->on('Category', 'id', 'category')->with('', 'user', '=', $session->user->id)
+            ->innerJoin('Subscription', 'mySubscriptions')->on('Category', 'id', 'category')->with('', 'user', '=', $session->user->id)->withFields('id', 'owner')
             ->orderAscBy('Event', 'startAt')
             ->orderAscBy('Attendee', 'createdAt');
 
@@ -161,16 +161,13 @@ class Events {
             throw new \Exception('Not connected');
         }
 
-        if(!is_object($params)) {
-            throw new \InvalidArgumentException('Object expected');
-        }
-
         Helpers::checkParams($params, 'categoryID', 'is_int');
         Helpers::checkParams($params, 'year', 'is_int');
         Helpers::checkParams($params, 'month', 'is_int');
         Helpers::checkParams($params, 'day', 'is_int');
         Helpers::checkParams($params, 'hour', 'is_int');
         Helpers::checkParams($params, 'minute', 'is_int');
+        Helpers::checkParams($params, 'duration', 'is_int');
         Helpers::checkParams($params, 'statuses', 'is_array');
 
         $statuses = [];
@@ -257,10 +254,6 @@ class Events {
             throw new \Exception('Not connected');
         }
 
-        if(!is_object($params)) {
-            throw new \InvalidArgumentException('Object expected');
-        }
-
         Helpers::checkParams($params, 'eventID', 'is_int');
 
         $request = DataRequest::get('Event')->withFields('id', 'recurrence')
@@ -268,11 +261,13 @@ class Events {
 
         if(($session->user->role & User::ROLE_ADMINISTRATOR) === 0) {
             $request->innerJoin('Category')->on('Event', 'category')
-                ->innerJoin('Subscription')->on('Category', 'id', 'category')->with('', 'user', '=', $session->user->id);
+                ->innerJoin('Subscription')->on('Category', 'id', 'category')
+                    ->with('', 'user', '=', $session->user->id)
+                    ->with('AND', 'owner', '=', 1);
         }
 
         $event = $request->mapAsObject();
-    
+
         if(empty($event)) {
             throw new \Exception('Evènement non trouvée');
         }

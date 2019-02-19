@@ -9,7 +9,7 @@ use App\Model\User;
 use App\Model\Subscription;
 
 class Recurrences {
-    public static function save($params = null) {
+    public static function create($params = null) {
         $session = Session::get();
 
         if($session->isIdentified() === false) {
@@ -18,10 +18,28 @@ class Recurrences {
 
         Helpers::checkParams($params, 'categoryID', 'is_int');
         Helpers::checkParams($params, 'type', 'is_string');
-        Helpers::checkParams($params, 'duration', 'is_int');
         Helpers::checkParams($params, 'hour', 'is_int');
         Helpers::checkParams($params, 'minute', 'is_int');
-        Helpers::checkParams($params, 'timezone', 'is_string');
+        Helpers::checkParams($params, 'duration', 'is_int');
+        Helpers::checkParams($params, 'statuses', 'is_array');
+
+        $statuses = [];
+
+        foreach($params->statuses as $status) {
+            if(is_string($status)) {
+                $status = strip_tags($status);
+                $status = trim($status);
+
+                if(!empty($status)) {
+                    $statuses[] = $status;
+                }
+            }
+        }
+
+        if(sizeof($statuses) < 1) {
+            throw new \Exception('Not enough statuses');
+        }
+
 
         $request = DataRequest::get('Category')->withFields('id', 'name', 'color')
             ->where('', 'Category', 'id', '=', $params->categoryID);
@@ -38,12 +56,20 @@ class Recurrences {
             throw new \Exception('Groupe non trouvé');
         }
 
+        if($params->hour < 0 || $params->hour > 23) {
+            throw new \Exception('Invalid hour');
+        }
+
+        if($params->minute < 0 || $params->minute > 59) {
+            throw new \Exception('Invalid minute');
+        }
+
         $recurrence = new Recurrence();
         $recurrence->category = $category;
         $recurrence->duration = $params->duration;
-        $recurrence->hour = $params->hour % 24;
-        $recurrence->minute = $params->minute % 60;
-        $recurrence->timezone = $params->timezone; // TODO check from available timezones
+        $recurrence->hour = $params->hour;
+        $recurrence->minute = $params->minute;
+        $recurrence->timezone = 'Europe/Paris'; // TODO review
 
         switch($params->type) {
             case Recurrence::TYPE_DAY:
@@ -62,6 +88,7 @@ class Recurrences {
         }
 
         $recurrence->type = $params->type;
+        $recurrence->statuses = implode('|', $statuses);
         $recurrence->save();
         Database::getWriter()->commit();
         return true;
@@ -77,13 +104,13 @@ class Recurrences {
         Helpers::checkParams($params, 'recurrenceID', 'is_int');
 
         $request = DataRequest::get('Recurrence')->withFields('id')
-            ->innerJoin('Category')->on('Recurrence', 'category')
             ->where('', 'Recurrence', 'id', '=', $params->recurrenceID);
 
         if(($session->user->role & User::ROLE_ADMINISTRATOR) === 0) {
-            $request->innerJoin('Subscription')->on('Category', 'id', 'category')
-                ->with('', 'user', '=', $session->user->id)
-                ->with('AND', 'owner', '=', 1);
+            $request->innerJoin('Category')->on('Recurrence', 'category')
+                ->innerJoin('Subscription')->on('Category', 'id', 'category')
+                    ->with('', 'user', '=', $session->user->id)
+                    ->with('AND', 'owner', '=', 1);
         }
 
         $recurrence = $request->mapAsObject();
