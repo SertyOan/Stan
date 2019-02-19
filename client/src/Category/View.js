@@ -57,7 +57,7 @@ export default View.extend({
                         this.emit('DeleteRecurrence', { recurrenceID: selection.id });
                     }.bind(this, recurrence));
                 line.add(new Label(description));
-            });
+            }.bind(this));
 
             block.add(new Link({ text: 'Créer un évènement' }))
                 .on('Click', this.showCreator.bind(this));
@@ -78,19 +78,27 @@ export default View.extend({
             var subView = block.add(new View());
             subView.addType('member');
             subView.add(new Label(subscription.user.nickname)).addType('name');
-            subView.add(new Label(subscription.owner ? 'Administrateur' : 'Membre')).addType('status'); // TODO review
+
+            if(subscription.owner) {
+                subView.add(new Label('Administrateur')).addType('status');
+                subView.addType('owner');
+                Helpers.Element.setAttributes(subView.elements.root, { style: 'border-color:#' + category.color });
+            }
+            else {
+                subView.add(new Label('Membre')).addType('status');
+            }
 
             if(options.isOwner || options.isAdministrator) {
                 if(subscription.owner) {
                     var link = subView.add(new Link({ text: 'Rétrograder' }));
-                    link.addType('owner');
+                    link.addType('action');
                     link.on('Click', function(selection) {
                         this.emit('Demote', selection.id);
                     }.bind(this, subscription));
                 }
                 else {
                     var link = subView.add(new Link({ text: 'Promouvoir' }));
-                    link.addType('owner');
+                    link.addType('action');
                     link.on('Click', function(selection) {
                         this.emit('Promote', selection.id);
                     }.bind(this, subscription));
@@ -107,7 +115,7 @@ export default View.extend({
             block.add(new HBox())
                 .add(new Button({ text: i18n.translate('DELETE') }))
                     .on('Click', function() {
-                        // this.emit.bind(this, 'Delete')
+                        this.emit.bind(this, 'DeleteCategory');
                     });
         }
     },

@@ -7,15 +7,19 @@
     width: calc(25% - 10px);
     padding: 5px;
     margin: 5px;
-    border: 1px solid rgb(0, 86, 134)
+    background: rgb(255, 255, 255)
 }
 
 .category-view .creator {
     padding: 5px;
     margin: 5px;
-    background: white
+    background: rgb(255, 255, 255)
 }
 
-.category-view .owner {
+.category-view .member .action {
     text-align: right
+}
+
+.category-view .member.owner {
+    border-left-width: 10px
 }

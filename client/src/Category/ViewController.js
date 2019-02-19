@@ -88,6 +88,17 @@ export default Class.extend({
             }
         }.bind(this));
 
+        view.on('DeleteRecurrence', function(data) {
+            Application.callAPI({
+                method: 'Recurrences::delete',
+                params: data,
+                onSuccess: function(success) {
+                    Application.notifier.notify('Evènement récurrent supprimé');
+                    this.refresh();
+                }.bind(this)
+            });
+        }.bind(this));
+
         view.on('Delete', function() {
             Application.callAPI({
                 method: 'Categories::delete',
