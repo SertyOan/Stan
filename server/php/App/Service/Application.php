@@ -10,10 +10,14 @@ use App\Model\User;
 class Application {
     public static function session() {
         $session = Session::get();
+
         $user = $session->user;
-        $user->lastSeen = new \DateTime();
-        $user->save();
-        Database::getWriter()->commit();
+
+        if(!empty($user)) {
+            $user->lastSeen = new \DateTime();
+            $user->save();
+            Database::getWriter()->commit();
+        }
 
         return [
             'id' => empty($user) ? null : $user->id,
