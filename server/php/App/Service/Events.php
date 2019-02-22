@@ -248,7 +248,7 @@ class Events {
         return true;
     }
 
-    public static function delete($params = null) {
+    public static function cancel($params = null) {
         $session = Session::get();
 
         if($session->isIdentified() === false) {
@@ -270,10 +270,11 @@ class Events {
         $event = $request->mapAsObject();
 
         if(empty($event)) {
-            throw new \Exception('Evènement non trouvée');
+            throw new \Exception('Action non autorisée');
         }
 
-        $event->delete();
+        $event->cancelled = 1;
+        $event->save();
         Database::getWriter()->commit();
         return true;
     }

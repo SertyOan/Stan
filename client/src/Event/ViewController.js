@@ -38,6 +38,14 @@ export default Class.extend({
             });
         }.bind(this));
 
+        view.on('Cancel', function() {
+            Application.callAPI({
+                method: 'Events::cancel',
+                params: event.id,
+                onSuccess: this.refresh.bind(this)
+            });
+        }.bind(this));
+
         view.on('HeadClick', function() {
             if(view.focused) {
                 view.unfocus();

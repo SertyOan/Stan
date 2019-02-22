@@ -46,14 +46,19 @@ export default View.extend({
 
         head.add(new Label(title)).addType('date');
 
-        var texts = [];
-        
-        event.statuses.forEach(function(status) {
-            event.myAttendees[status] = event.myAttendees[status] || [];
-            texts.push(status + ': ' + event.myAttendees[status].length);
-        }.bind(this));
+        if(event.cancelled) {
+            this.summary = head.add(new Label('Annulé'));
+        }
+        else {
+            var texts = [];
+            
+            event.statuses.forEach(function(status) {
+                event.myAttendees[status] = event.myAttendees[status] || [];
+                texts.push(status + ': ' + event.myAttendees[status].length);
+            }.bind(this));
 
-        this.summary = head.add(new Label(texts.join(', ')));
+            this.summary = head.add(new Label(texts.join(', ')));
+        }
 
         this.form = this.add(new View());
         this.form.addType('form');
@@ -62,48 +67,54 @@ export default View.extend({
             this.form.hide();
         }
 
-        event.statuses.forEach(function(status) {
-            var subView = this.form.add(new View());
-            subView.addType('status');
-            subView.add(new Label(status + ' (' + event.myAttendees[status].length + ')')).addType('title');
+        if(event.cancelled) {
+            this.form.add(new Label('Annulé'));
+        }
+        else {
+            event.statuses.forEach(function(status) {
+                var subView = this.form.add(new View());
+                subView.addType('status');
+                subView.add(new Label(status + ' (' + event.myAttendees[status].length + ')')).addType('title');
 
-            event.myAttendees[status].forEach(function(attendee) {
-                var line = subView.add(new HBox());
-                
-                if(attendee.deletable) {
-                    line.add(new Link({ text: 'X' }), { width: '20px' })
-                        .on('Click', this.emit.bind(this, 'Unattend', { attendeeID: attendee.id }));
-                }
-                else {
-                    line.add(new View(), { width: '20px' }).setHTML('&nbsp;');
-                }
+                event.myAttendees[status].forEach(function(attendee) {
+                    var line = subView.add(new HBox());
+                    
+                    if(attendee.deletable) {
+                        line.add(new Link({ text: 'X' }), { width: '20px' })
+                            .on('Click', this.emit.bind(this, 'Unattend', { attendeeID: attendee.id }));
+                    }
+                    else {
+                        line.add(new View(), { width: '20px' }).setHTML('&nbsp;');
+                    }
 
-                if(attendee.guest) {
-                    var label = line.add(new Label(attendee.guest + ' #invité'));
-                    label.addType('guest');
-                }
-                else {
-                    line.add(new Label(attendee.createdBy.nickname));
-                }
+                    if(attendee.guest) {
+                        var label = line.add(new Label(attendee.guest + ' #invité'));
+                        label.addType('guest');
+                    }
+                    else {
+                        line.add(new Label(attendee.createdBy.nickname));
+                    }
+                }.bind(this));
             }.bind(this));
-        }.bind(this));
 
-        var actions = this.form.add(new View());
-        actions.addType('actions');
+            var actions = this.form.add(new View());
+            actions.addType('actions');
 
-        event.statuses.forEach(function(status) {
-            actions.add(new Link({
-                    text: status
-                }))
-                .on('Click', this.emit.bind(this, 'Attend', { status: status }));
-        }.bind(this));
+            event.statuses.forEach(function(status) {
+                actions.add(new Link({
+                        text: status
+                    }))
+                    .on('Click', this.emit.bind(this, 'Attend', { status: status }));
+            }.bind(this));
 
-        var guestAdd = actions.add(new Link({ text: 'Ajout d\'invité' }));
-        guestAdd.addType('guest');
-        guestAdd.on('Click', this.showGuestOverlay.bind(this, event));
+            var guestAdd = actions.add(new Link({ text: 'Ajout d\'invité' }));
+            guestAdd.addType('guest');
+            guestAdd.on('Click', this.showGuestOverlay.bind(this, event));
 
-        if(event.owned) {
-            actions.add(new Link({ text: 'Annuler' }));
+            if(event.owned) {
+                actions.add(new Link({ text: 'Annuler' }))
+                    .on('Click', this.emit.bind(this, 'Cancel'));
+            }
         }
     },
     showGuestOverlay: function(event) {
