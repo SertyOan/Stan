@@ -21,7 +21,7 @@ class Users {
         $email = strtolower($email);
 
         if(!Mail::checkAddress($email)) {
-            throw new Exception('Adresse email invalide');
+            throw new \Exception('Adresse email invalide');
         }
 
         $user = DataRequest::get('User')->withFields('id', 'email', 'nickname', 'secretKey')
