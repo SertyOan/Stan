@@ -140,7 +140,7 @@ class Events {
             throw new \InvalidArgumentException('Event ID expected');
         }
 
-        $event = DataRequest::get('Event')->withFields('id', 'startAt', 'endAt', 'statuses')
+        $event = DataRequest::get('Event')->withFields('id', 'startAt', 'endAt', 'statuses', 'cancelled')
             ->leftJoin('Attendee', 'Attendees')->on('Event', 'id', 'event')->withFields('id', 'status', 'guest')
             ->leftJoin('User')->on('Attendee', 'createdBy')->withFields('id', 'nickname')
             ->innerJoin('Category')->on('Event', 'category')->withFields('id', 'name', 'color')
@@ -276,6 +276,6 @@ class Events {
         $event->cancelled = 1;
         $event->save();
         Database::getWriter()->commit();
-        return true;
+        return self::get($params);
     }
 }

@@ -41,7 +41,9 @@ export default Class.extend({
         view.on('Cancel', function() {
             Application.callAPI({
                 method: 'Events::cancel',
-                params: event.id,
+                params: {
+                    eventID: event.id
+                },
                 onSuccess: this.refresh.bind(this)
             });
         }.bind(this));
