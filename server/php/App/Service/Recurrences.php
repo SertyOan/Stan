@@ -66,6 +66,8 @@ class Recurrences {
         }
 
         $recurrence = new Recurrence();
+        $recurrence->from = 0; // TODO review
+        $recurrence->to = 4294967295; // TODO review
         $recurrence->category = $category;
         $recurrence->duration = $params->duration;
         $recurrence->hour = $params->hour;
@@ -91,6 +93,8 @@ class Recurrences {
         $recurrence->type = $params->type;
         $recurrence->statuses = implode('|', $statuses);
         $recurrence->save();
+
+        $recurrence->createEvents();
         Database::getWriter()->commit();
         return true;
     }
