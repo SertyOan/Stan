@@ -9,36 +9,36 @@ HTML {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 20px;
+    height: 24px;
     background: rgb(0, 86, 134)
 }
 
 #footer A {
     color: rgb(255, 255, 255);
-    line-height: 10px;
-    font-size: 10px
+    line-height: 14px;
+    font-size: 14px
 }
 
 #release {
     position: absolute;
     top: 0;
     left: 0;
-    height: 20px;
+    height: 24px;
     padding: 5px;
-    line-height: 10px;
-    color: rgb(255, 255, 255);
-    font-size: 10px
+    line-height: 14px;
+    font-size: 14px;
+    color: rgb(255, 255, 255)
 }
 
 #custom {
     position: absolute;
     top: 0;
     right: 0;
-    height: 20px;
+    height: 24px;
     padding: 5px;
-    line-height: 10px;
-    color: rgb(255, 255, 255);
-    font-size: 10px
+    line-height: 14px;
+    font-size: 14px;
+    color: rgb(255, 255, 255)
 }
 
 .oyat-notifier.fixed {
