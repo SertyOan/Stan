@@ -140,13 +140,22 @@ export default View.extend({
     },
     focus: function() {
         this.focused = true;
+        this.removeType('blur');
+        this.addType('focus');
         this.form.show();
         this.summary.hide();
     },
     unfocus: function() {
         this.focused = false;
+        this.removeType('blur');
+        this.removeType('focus');
         this.form.hide();
         this.overlay.hide();
         this.summary.show();
+    },
+    blur: function() {
+        this.unfocus();
+        this.removeType('focus');
+        this.addType('blur');
     }
 });

@@ -2,7 +2,16 @@
     position: relative;
     overflow: hidden;
     margin: 10px 0 0 0;
-    background: #EEEEEE
+    background: #EEEEEE;
+    transition: opacity 1s ease-out
+}
+
+.event-view.focus {
+    box-shadow: 0 0 5px black
+}
+
+.event-view.blur {
+    opacity: 0.5
 }
 
 .event-view .status {
@@ -37,7 +46,7 @@
 .event-view .actions {
     margin-top: 10px;
     padding: 10px;
-    background: rgb(0, 86, 134)
+    background: lightgrey
 }
 
 .event-view .actions .oyat-link {
@@ -46,10 +55,6 @@
 
 .event-view .actions .oyat-link.guest {
     display: block
-}
-
-.event-view .actions .oyat-link A {
-    color: rgb(255, 255, 255)
 }
 
 .event-view .overlay {

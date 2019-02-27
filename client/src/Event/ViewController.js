@@ -58,12 +58,16 @@ export default Class.extend({
             }
         });
 
+        Application.bus.on('UnfocusEvent', function(busEvent) {
+            view.unfocus();
+        });
+
         Application.bus.on('FocusEvent', function(busEvent) {
             if(busEvent.id === event.id) {
                 view.focus();
             }
             else {
-                view.unfocus();
+                view.blur();
             }
         });
     },

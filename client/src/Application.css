@@ -44,13 +44,13 @@ HTML {
 .oyat-notifier.fixed {
     position: fixed;
     z-index: 3000;
-    top: 52px;
-    right: 25%;
+    top: 70px;
+    right: 70px;
     width: 50%
 }
 
 .oyat-notifier.fixed .oyat-notification {
-    background: rgb(0, 86, 134);
+    background: black;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5)
 }
 
