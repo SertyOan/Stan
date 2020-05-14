@@ -1,9 +1,9 @@
 <?php
 namespace App\Model;
 
-use Syra\MySQL\Object;
+use Syra\MySQL\ModelObject;
 
-class Subscription extends Object {
+class Subscription extends ModelObject {
     const
         DATABASE_CLASS = '\\App\\Database',
         DATABASE_SCHEMA = STAN_DATABASE_SCHEMA,

@@ -1,11 +1,11 @@
 <?php
 namespace App\Model;
 
-use Syra\MySQL\Object;
+use Syra\MySQL\ModelObject;
 use App\DataRequest;
 use App\Model\Event;
 
-class Recurrence extends Object {
+class Recurrence extends ModelObject {
     const
         DATABASE_CLASS = '\\App\\Database',
         DATABASE_SCHEMA = STAN_DATABASE_SCHEMA,
