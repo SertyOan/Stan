@@ -15,7 +15,7 @@
     "oyat": "github:sertyoan/Oyat#master",
     "style-loader": "^0.20.3",
     "url-loader": "^1.0.1",
-    "webpack": "4.17.1",
+    "webpack": "5.94.0",
     "webpack-cli": "^2.0.13"
   }
 }
